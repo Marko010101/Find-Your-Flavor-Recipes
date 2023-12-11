@@ -1,6 +1,7 @@
 import { async } from 'regenerator-runtime';
 import { API_URL, RES_PER_PAGE } from './config.js';
 import { getJSON } from './helpers.js';
+import json from 'server/reply/json.js';
 
 export const state = {
   recipe: {},
@@ -10,7 +11,7 @@ export const state = {
     page: 1,
     resultsPerPage: RES_PER_PAGE,
   },
-  addBookmarks: [],
+  bookmarks: [],
 };
 
 export const loadRecipe = async function (id) {
@@ -28,8 +29,7 @@ export const loadRecipe = async function (id) {
       cookingTime: recipe.cooking_time,
       ingredients: recipe.ingredients, // Corrected typo here
     };
-    if (state.addBookmarks.some(b => b.id === id))
-      state.recipe.bookmarked = true;
+    if (state.bookmarks.some(b => b.id === id)) state.recipe.bookmarked = true;
     else state.recipe.bookmarked = false;
 
     console.log(state.recipe);
@@ -80,19 +80,33 @@ export const updateServings = function (newServings) {
   state.recipe.servings = newServings;
 };
 
+const persistBookmarks = function () {
+  localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
+};
+
 export const addBookmark = function (recipe) {
   // Add bookmark
-  state.addBookmarks.push(recipe);
+  state.bookmarks.push(recipe);
 
   // Mark current recipe as bookmark
   if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
+  persistBookmarks();
 };
 
 export const deleteBookmark = function (id) {
   // Delete bookmark
-  const index = state.addBookmarks.findIndex(el => el.id === id);
-  state.addBookmarks.splice(index, 1);
+  const index = state.bookmarks.findIndex(el => el.id === id);
+  state.bookmarks.splice(index, 1);
 
   // Mark current recipe as NOT bookmark
   if (id === state.recipe.id) state.recipe.bookmarked = false;
+  persistBookmarks();
 };
+
+const init = function () {
+  const storage = localStorage.getItem('bookmarks');
+  if (storage) state.bookmarks = JSON.parse(storage);
+};
+
+init();
+console.log(state.bookmarks);
