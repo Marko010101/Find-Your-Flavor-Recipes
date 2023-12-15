@@ -4,6 +4,16 @@ import recipeView from './recipeView.js';
 export default class View {
   _data;
 
+  /**
+   * Render the received object to the DOM
+   * @param {object| object[]} data The data to be rendered (e.g. recipe)
+   * @param {boolean} [render= ture ] if false, create markup string insted of rendering to the DOM
+   * @returns {undefined | string} A markup string is returned if render = false
+   * @this {Object} View instance
+   * @author Marko Baghashvili
+   * @todo Finish implementation
+   */
+
   render(data, render = true) {
     if (!data || (Array.isArray(data) && data.length === 0))
       return this.renderError();
