@@ -60,6 +60,13 @@ export default class View {
     this._parentElement.innerHTML = '';
   }
 
+  pageRefresh() {
+    const logo = document.querySelector('.header__logo');
+    logo.addEventListener('click', function () {
+      window.location.href = 'index.html';
+    });
+  }
+
   renderSpinner() {
     const markup = `
     <div class="spinner">
